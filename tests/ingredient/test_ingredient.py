@@ -6,25 +6,18 @@ from src.models.ingredient import Restriction
 def test_ingredient():
     ingredient1_name = 'queijo provolone'
     ingredient2_name = 'queijo gorgonzola'
-    ingredient1_name_repr = f"Ingredient('{ingredient1_name}')"
-    ingredient2_name_repr = f"Ingredient('{ingredient2_name}')"
+    ingredient1_repr = f"Ingredient('{ingredient1_name}')"
+    ingredient2_repr = f"Ingredient('{ingredient2_name}')"
     ingredient_restrictions = {Restriction.LACTOSE, Restriction.ANIMAL_DERIVED}
     ingredient1 = Ingredient(ingredient1_name)
-    ingredient2 = Ingredient(ingredient1_name)
-
-    assert ingredient1.__hash__() == ingredient2.__hash__()
-
     ingredient2 = Ingredient(ingredient2_name)
+
     assert ingredient1.__hash__() != ingredient2.__hash__()
 
     assert ingredient1.__eq__(ingredient2) is False
 
-    ingredient2 = Ingredient(ingredient1_name)
-    assert ingredient1.__eq__(ingredient2) is True
-
-    ingredient2 = Ingredient(ingredient2_name)
-    assert ingredient1.__repr__() == ingredient1_name_repr
-    assert ingredient2.__repr__() == ingredient2_name_repr
+    assert ingredient1.__repr__() == ingredient1_repr
+    assert ingredient2.__repr__() == ingredient2_repr
 
     assert ingredient1.name == ingredient1_name
     assert ingredient2.name == ingredient2_name
@@ -32,3 +25,9 @@ def test_ingredient():
     for restriction in ingredient_restrictions:
         assert restriction in ingredient1.restrictions
         assert restriction in ingredient2.restrictions
+
+    ingredient2 = Ingredient(ingredient1_name)
+
+    assert ingredient1.__hash__() == ingredient2.__hash__()
+
+    assert ingredient1.__eq__(ingredient2) is True
