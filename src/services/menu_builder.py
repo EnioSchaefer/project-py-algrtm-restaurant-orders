@@ -11,15 +11,14 @@ def build_full_dish(dish):
         "dish_name": dish.name,
         "ingredients": dish.get_ingredients(),
         "price": dish.price,
-        "restrictions": dish.get_restrictions()
+        "restrictions": dish.get_restrictions(),
     }
 
 
 def check_restrictions(dish_restrictions, restriction):
     is_restricted = list()
     for curr_restriction in dish_restrictions:
-        is_restricted.append(
-            curr_restriction.__eq__(restriction))
+        is_restricted.append(curr_restriction.__eq__(restriction))
     return any(is_restricted)
 
 
@@ -45,18 +44,21 @@ class MenuBuilder:
         menu = self.menu_data.dishes
 
         full_dishes = list()
-        if restriction is None:
-            for dish in menu:
+        for dish in menu:
+            is_available = self.inventory.check_recipe_availability(
+                dish.recipe
+            )
+            if restriction is None and is_available:
                 full_dishes.append(build_full_dish(dish))
-        else:
-            for dish in menu:
+            else:
                 dish_restrictions = dish.get_restrictions()
                 is_restricted = check_restrictions(
-                    dish_restrictions, restriction)
-                if not is_restricted:
+                    dish_restrictions, restriction
+                )
+                if not is_restricted and is_available:
                     full_dishes.append(build_full_dish(dish))
 
         return full_dishes
 
 
-print(MenuBuilder().get_main_menu())
+MenuBuilder().get_main_menu()
