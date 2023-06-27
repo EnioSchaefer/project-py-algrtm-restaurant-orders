@@ -1,10 +1,26 @@
 from typing import Dict, List
-
 from services.inventory_control import InventoryMapping
 from services.menu_data import MenuData
 
 DATA_PATH = "data/menu_base_data.csv"
 INVENTORY_PATH = "data/inventory_base_data.csv"
+
+
+def build_full_dish(dish):
+    return {
+        "dish_name": dish.name,
+        "ingredients": dish.get_ingredients(),
+        "price": dish.price,
+        "restrictions": dish.get_restrictions()
+    }
+
+
+def check_restrictions(dish_restrictions, restriction):
+    is_restricted = list()
+    for curr_restriction in dish_restrictions:
+        is_restricted.append(
+            curr_restriction.__eq__(restriction))
+    return any(is_restricted)
 
 
 class MenuBuilder:
@@ -26,4 +42,21 @@ class MenuBuilder:
 
     # Req 4
     def get_main_menu(self, restriction=None) -> List[Dict]:
-        pass
+        menu = self.menu_data.dishes
+
+        full_dishes = list()
+        if restriction is None:
+            for dish in menu:
+                full_dishes.append(build_full_dish(dish))
+        else:
+            for dish in menu:
+                dish_restrictions = dish.get_restrictions()
+                is_restricted = check_restrictions(
+                    dish_restrictions, restriction)
+                if not is_restricted:
+                    full_dishes.append(build_full_dish(dish))
+
+        return full_dishes
+
+
+print(MenuBuilder().get_main_menu())
