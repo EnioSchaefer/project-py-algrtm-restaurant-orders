@@ -59,6 +59,3 @@ class MenuBuilder:
                     full_dishes.append(build_full_dish(dish))
 
         return full_dishes
-
-
-MenuBuilder().get_main_menu()
